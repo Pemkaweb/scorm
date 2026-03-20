@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="./vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Тренажёр</title>
+  <script src="lms.js"></script>
+  <script src="config.js"></script>
+  <script src="standalone-bridge.js"></script>
+  <script>
+    (function () {
+      function start() {
+        console.log('[App] LMS ready');
+      }
+
+      var cfg = window.TRAINER_CONFIG || {};
+      var scormVersion = cfg.SCORM_VERSION || '1.2';
+      var is2004 = scormVersion === '2004';
+
+      var params = {
+        presentationId: 'BotoSimulator_V8',
+        slidesToView: 0,
+        slidesWeight: 1,
+        quizzes: [],
+        scenarios: [],
+        totalScore: cfg.MAX_SCORE || 100,
+        passingScore: cfg.PASSING_SCORE || 70,
+        timeLimit: 3600,
+        exitOnTimeout: false,
+        showMessageOnTimeout: false,
+        timeoutMessage: '',
+        flags: 0,
+        resumeMode: 'prompt',
+        scorm2004: is2004,
+        tincan: {
+          endPoint: '',
+          auth: { type: '', key: '', login: '', password: '', name: '', email: '' },
+          i18n: {}
+        }
+      };
+
+      var profile = window.STANDALONE_PROFILE || {};
+
+      if (window.iSpring && window.iSpring.LMS) {
+        var lms = iSpring.LMS.create('ISPRING_LMS_ID', scormVersion, params);
+        lms.initialize(start);
+
+        if (window.LMS_API) {
+          var origGetStudentId = window.LMS_API.getStudentId ? window.LMS_API.getStudentId.bind(window.LMS_API) : null;
+          var origGetStudentName = window.LMS_API.getStudentName ? window.LMS_API.getStudentName.bind(window.LMS_API) : null;
+
+          window.LMS_API.getStudentId = function () {
+            var value = origGetStudentId ? origGetStudentId() : null;
+            return value || profile.student_id || profile.email || null;
+          };
+
+          window.LMS_API.getStudentName = function () {
+            var value = origGetStudentName ? origGetStudentName() : null;
+            return value || profile.student_name || profile.email || null;
+          };
+        }
+
+        window.onunload = window.onbeforeunload = function () {
+          try { lms.closeLms(); } catch (e) {}
+        };
+      } else {
+        console.warn('[App] iSpring LMS API not found');
+        window.LMS_API = window.LMS_API || {
+          initialize: function () { return true; },
+          isAvailable: function () { return !!profile.student_id; },
+          setStatus: function () {},
+          setScore: function () {},
+          finish: function () {},
+          getStudentId: function () { return profile.student_id || profile.email || null; },
+          getStudentName: function () { return profile.student_name || profile.email || null; }
+        };
+        start();
+      }
+    })();
+  </script>
+  <script type="module" crossorigin src="./data/index-nCtK8YOT.fix_20260319003054.js"></script>
+  <link rel="stylesheet" crossorigin href="./data/index-DxCQefYA.fix_20260319003054.css">
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>

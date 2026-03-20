@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Запуск</title>
+  <style>
+    :root{
+      --bg:#f3f3f3;
+      --card:#fff;
+      --text:#131313;
+      --muted:#6b7280;
+      --line:#e8e8e8;
+      --red:#ef3b2d;
+      --red2:#d92e21;
+      --soft:#faf7f7;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .page{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px 18px 40px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:26px;
+      box-shadow:0 1px 2px rgba(0,0,0,.03);
+    }
+    .card + .card{ margin-top:18px; }
+    .logo{
+      width:34px;height:34px;border:3px solid var(--red);border-radius:999px;
+      position:relative; margin-bottom:16px;
+    }
+    .logo:before,.logo:after{
+      content:""; position:absolute; inset:5px; border:2px solid var(--red); border-radius:999px;
+    }
+    .logo:after{ inset:11px; border-width:3px; }
+    h1{
+      margin:0 0 10px;
+      font-size:34px;
+      line-height:1.05;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    p{
+      margin:0;
+      line-height:1.45;
+      color:#333;
+    }
+    .small{ color:var(--muted); font-size:14px; margin-top:6px; }
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:18px;
+    }
+    .field{
+      grid-column:span 1;
+    }
+    .field.wide{ grid-column:1/-1; }
+    .label{
+      display:block;
+      margin:0 0 8px;
+      font-size:13px;
+      font-weight:700;
+    }
+    .input{
+      width:100%;
+      height:48px;
+      border:1px solid #d8dbe2;
+      border-radius:12px;
+      padding:0 14px;
+      font-size:16px;
+      outline:none;
+      background:#fff;
+    }
+    .input:focus{
+      border-color:#b8bec9;
+      box-shadow:0 0 0 3px rgba(17,24,39,.06);
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height:42px;
+      padding:0 18px;
+      border:0;
+      border-radius:999px;
+      background:var(--red);
+      color:#fff;
+      font-weight:700;
+      font-size:14px;
+      cursor:pointer;
+    }
+    .btn:hover{ background:var(--red2); }
+    .btn.secondary{
+      background:#fff;
+      color:#111827;
+      border:1px solid #dadde4;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+    .title2{
+      margin:0 0 18px;
+      font-size:22px;
+      line-height:1.15;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(5, 1fr);
+      gap:18px;
+      align-items:center;
+    }
+    .step{
+      min-height:130px;
+      border:1px solid #e3e5eb;
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      box-shadow:0 1px 3px rgba(0,0,0,.03);
+    }
+    .n{
+      color:var(--red);
+      font-size:30px;
+      font-weight:800;
+      line-height:1;
+      margin-bottom:12px;
+    }
+    .arr{
+      text-align:center;
+      color:#9ca3af;
+      font-size:24px;
+      font-weight:700;
+    }
+    .list{
+      margin-top:18px;
+      background:var(--soft);
+      border-radius:18px;
+      padding:14px;
+    }
+    .item{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:12px 10px;
+      background:#fff;
+      border:1px solid #f0e6e6;
+      border-radius:12px;
+      font-size:14px;
+    }
+    .item + .item{ margin-top:10px; }
+    .ico{
+      width:22px;
+      flex:0 0 22px;
+      text-align:center;
+      color:var(--red);
+      font-weight:700;
+    }
+    .saved, .error{
+      display:none;
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:12px;
+      font-size:14px;
+    }
+    .saved{
+      background:#edf7ed;
+      border:1px solid #cfe6cf;
+      color:#236323;
+    }
+    .error{
+      background:#fff1f1;
+      border:1px solid #f3c9c9;
+      color:#9f1d1d;
+    }
+    @media (max-width: 760px){
+      .grid{ grid-template-columns:1fr; }
+      .steps{ grid-template-columns:1fr; }
+      .arr{ display:none; }
+      h1{ font-size:28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="card">
+      <div class="logo"></div>
+      <h2>BOTO | SCORM</h2>
+
+      <form id="launchForm">
+        <div class="grid">
+          <div class="field wide">
+            <label class="label" for="email">Почта</label>
+            <input class="input" id="email" type="email" autocomplete="email" required />
+          </div>
+
+          <div class="field">
+            <label class="label" for="firstName">Имя</label>
+            <input class="input" id="firstName" type="text" autocomplete="given-name" />
+          </div>
+
+          <div class="field">
+            <label class="label" for="lastName">Фамилия</label>
+            <input class="input" id="lastName" type="text" autocomplete="family-name" />
+          </div>
+        </div>
+
+        <div class="saved" id="savedBox"></div>
+        <div class="error" id="errorBox"></div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Далее ↓</button>
+        </div>
+      </form>
+    </section>
+
+  <script>
+    (function () {
+      function findScormApi(win) {
+        var n = 0;
+        while ((!win.API_1484_11 && !win.API) && win.parent && win.parent !== win && n < 10) {
+          n++;
+          win = win.parent;
+        }
+        return win.API_1484_11 || win.API || null;
+      }
+
+      function hasLms() {
+        try {
+          return !!(findScormApi(window) || (window.opener && findScormApi(window.opener)));
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function readSaved() {
+        return {
+          email: localStorage.getItem('standalone_email') || '',
+          firstName: localStorage.getItem('standalone_first_name') || '',
+          lastName: localStorage.getItem('standalone_last_name') || '',
+          studentId: localStorage.getItem('standalone_student_id') || '',
+          studentName: localStorage.getItem('standalone_student_name') || ''
+        };
+      }
+
+      function save(profile) {
+        localStorage.setItem('standalone_email', profile.email || '');
+        localStorage.setItem('standalone_first_name', profile.firstName || '');
+        localStorage.setItem('standalone_last_name', profile.lastName || '');
+        localStorage.setItem('standalone_student_id', profile.studentId || '');
+        localStorage.setItem('standalone_student_name', profile.studentName || '');
+      }
+
+      function clearSaved() {
+        [
+          'standalone_email',
+          'standalone_first_name',
+          'standalone_last_name',
+          'standalone_student_id',
+          'standalone_student_name'
+        ].forEach(function (key) {
+          localStorage.removeItem(key);
+        });
+      }
+
+      function go(profile) {
+        if (profile) save(profile);
+        var data = profile || readSaved();
+        var url = new URL('./player.html', location.href);
+        if (data.studentId) url.searchParams.set('student_id', data.studentId);
+        if (data.studentName) url.searchParams.set('student_name', data.studentName);
+        if (data.email) url.searchParams.set('email', data.email);
+        location.href = url.toString();
+      }
+
+      var email = document.getElementById('email');
+      var firstName = document.getElementById('firstName');
+      var lastName = document.getElementById('lastName');
+      var launchForm = document.getElementById('launchForm');
+      var errorBox = document.getElementById('errorBox');
+      var savedBox = document.getElementById('savedBox');
+      var clearBtn = document.getElementById('clearBtn');
+      var startBtn = document.getElementById('startBtn');
+
+      var saved = readSaved();
+      email.value = saved.email;
+      firstName.value = saved.firstName;
+      lastName.value = saved.lastName;
+
+      if (hasLms()) {
+        go();
+        return;
+      }
+
+      if (saved.studentId) {
+        savedBox.textContent = 'Сохранён: ' + saved.studentId;
+        savedBox.style.display = 'block';
+      }
+
+      function submitForm(event) {
+        if (event) event.preventDefault();
+        errorBox.style.display = 'none';
+
+        var e = String(email.value || '').trim();
+        var f = String(firstName.value || '').trim();
+        var l = String(lastName.value || '').trim();
+
+        if (!e) {
+          errorBox.textContent = 'Введите почту';
+          errorBox.style.display = 'block';
+          return;
+        }
+
+        var name = [f, l].filter(Boolean).join(' ').trim() || e;
+
+        go({
+          email: e,
+          firstName: f,
+          lastName: l,
+          studentId: e,
+          studentName: name
+        });
+      }
+
+      launchForm.addEventListener('submit', submitForm);
+      startBtn.addEventListener('click', submitForm);
+      clearBtn.addEventListener('click', function () {
+        clearSaved();
+        email.value = '';
+        firstName.value = '';
+        lastName.value = '';
+        savedBox.style.display = 'none';
+        errorBox.style.display = 'none';
+      });
+    })();
+  </script>
+</body>
+</html>
