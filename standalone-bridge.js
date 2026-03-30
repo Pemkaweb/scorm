@@ -57,7 +57,7 @@
     url = String(url);
     return (
       url.indexOf('/dialog') !== -1 ||
-      url.indexOf('/check') !== -1 ||
+      url.indexOf('/poll') !== -1 ||
       url.indexOf('/final-recommendations') !== -1
     );
   }
