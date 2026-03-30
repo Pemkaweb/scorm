@@ -4,6 +4,7 @@
     var email = params.get('email') || localStorage.getItem('standalone_email') || '';
     var studentId = params.get('student_id') || localStorage.getItem('standalone_student_id') || email || '';
     var studentName = params.get('student_name') || localStorage.getItem('standalone_student_name') || '';
+
     if (!studentName) {
       var firstName = localStorage.getItem('standalone_first_name') || '';
       var lastName = localStorage.getItem('standalone_last_name') || '';
@@ -14,7 +15,11 @@
     if (studentId) localStorage.setItem('standalone_student_id', studentId);
     if (studentName) localStorage.setItem('standalone_student_name', studentName);
 
-    return { email: email, student_id: studentId, student_name: studentName };
+    return {
+      email: email,
+      student_id: studentId,
+      student_name: studentName,
+    };
   }
 
   function ensureBody(body) {
@@ -22,7 +27,10 @@
     if (!profile.student_id) return body;
 
     if (body == null) {
-      return { student_id: profile.student_id, student_name: profile.student_name || '' };
+      return {
+        student_id: profile.student_id,
+        student_name: profile.student_name || '',
+      };
     }
 
     if (typeof FormData !== 'undefined' && body instanceof FormData) {
